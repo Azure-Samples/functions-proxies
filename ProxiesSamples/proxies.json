@@ -1,0 +1,52 @@
+{
+  "$schema": "http://json.schemastore.org/proxies",
+  "proxies": {
+    "SimpleProxy": {
+      "matchCondition": {
+        "route": "/ip"
+      },
+      "backendUri": "http://httpbin.org/ip"
+    },
+    "TransformationSample": {
+      "matchCondition": {
+        "methods": [
+          "GET"
+        ],
+        "route": "/transform"
+      },
+      "backendUri": "http://httpbin.org/get",
+      "requestOverrides": {
+        "backend.request.method": "GET",
+        "backend.request.headers.x-customheader-1": "custom value",
+        "backend.request.headers.x-customheader-2": "%CUSTOM_CODE%",
+        "backend.request.headers.x-customheader-3": "{request.headers.Accept}",
+        "backend.request.headers.x-customheader-4": "The requested method was {request.method}",
+        "backend.request.querystring.parametername1": "custom value",
+        "backend.request.querystring.parametername2": "%CUSTOM_CODE%",
+        "backend.request.querystring.parametername3": "{request.querystring.parameter}",
+        "backend.request.querystring.parametername4": "The requested method was {request.method}"
+      },
+      "responseOverrides": {
+        "response.headers.x-responseheadername-1": "The requested method was {request.method}",
+        "response.headers.x-backendstatus": "The backend returned {backend.response.statusCode}"        
+      }
+    },
+    "MockSample": {
+      "matchCondition": {
+        "route": "/mock/person/{name}"
+      },
+      "responseOverrides": {
+        "response.statusCode": "200",
+        "response.statusReason": "OK",
+        "response.headers.Content-Type": "application/json",
+        "response.body": {
+          "id" : "1",
+          "personName" : "{name}",
+          "comments": [
+            "Proxies makes mocking so easy!"
+          ]
+        }
+      }
+    }    
+  }
+}
